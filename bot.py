@@ -1,11 +1,11 @@
 import telegram
 import os
 import time
+from pprint import pprint
 
 TOKEN = os.environ['TOKEN']
 
 bot = telegram.Bot(token=TOKEN)
-
 
 def main():
     last_update = bot.getUpdates()[-1]
@@ -17,8 +17,13 @@ def main():
         
         if curr_update_id != last_update_id:
             chat_id = curr_update.message.chat.id
-            text = curr_update.message.text
-            bot.sendMessage(chat_id, text)
+
+            if curr_update.message.photo != []:
+                photo = curr_update.message.photo[-1].file_id
+                bot.sendPhoto(chat_id, photo)
+        
+            elif curr_update.message.text != '':
+                bot.sendMessage(chat_id, curr_update.message.text)
 
             last_update_id = curr_update_id
 
