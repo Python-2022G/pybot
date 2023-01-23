@@ -2,6 +2,8 @@ import os
 from telegram import Update
 from telegram.ext import Updater, MessageHandler, filters, CallbackContext, CommandHandler, BaseFilter
 
+import requests
+
 TOKEN = os.environ['TOKEN']
 
 def start(update: Update, context: CallbackContext):
@@ -10,9 +12,11 @@ def start(update: Update, context: CallbackContext):
 def help(update: Update, context: CallbackContext):
     update.message.reply_text('how can i help you?')
 
-def echo(update: Update, context: CallbackContext):
-    text = update.message.text
-    update.message.reply_text(text)
+def dog(update: Update, context: CallbackContext):
+    response = requests.get('https://random.dog/woof.json')
+    url = response.json()['url']
+
+    update.message.reply_photo(url)
 
 
 def main():
@@ -27,7 +31,7 @@ def main():
     dispatcher.add_handler(handler=CommandHandler('help', callback=help))
 
     # message handler 
-    dispatcher.add_handler(handler=MessageHandler(filters=filters.Filters.all, callback=echo))
+    dispatcher.add_handler(handler=MessageHandler(filters=filters.Filters.text('dog'), callback=dog))
 
     updater.start_polling()
     updater.idle()
