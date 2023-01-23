@@ -1,34 +1,37 @@
-import telegram
 import os
-import time
-from pprint import pprint
+from telegram import Update
+from telegram.ext import Updater, MessageHandler, filters, CallbackContext, CommandHandler, BaseFilter
 
 TOKEN = os.environ['TOKEN']
 
-bot = telegram.Bot(token=TOKEN)
+def start(update: Update, context: CallbackContext):
+    update.message.reply_text('welcome to our bot')
+
+def help(update: Update, context: CallbackContext):
+    update.message.reply_text('how can i help you?')
+
+def echo(update: Update, context: CallbackContext):
+    text = update.message.text
+    update.message.reply_text(text)
+
 
 def main():
-    last_update_id = -1
+    # updater
+    updater = Updater(TOKEN)
 
-    while True:
-        curr_update = bot.getUpdates()[-1]
-        curr_update_id = curr_update.update_id
-        
-        if curr_update_id != last_update_id:
-            chat_id = curr_update.message.chat.id
+    # dispatcher
+    dispatcher = updater.dispatcher
 
-            if curr_update.message.photo:
-                photo = curr_update.message.photo[-1].file_id
-                bot.sendPhoto(chat_id, photo)
-        
-            elif curr_update.message.sticker:
-                bot.sendSticker(chat_id, curr_update.message.sticker)
-        
-            elif curr_update.message.text:
-                bot.sendMessage(chat_id, curr_update.message.text)
+    # command handlers
+    dispatcher.add_handler(handler=CommandHandler('start', callback=start))
+    dispatcher.add_handler(handler=CommandHandler('help', callback=help))
 
-            last_update_id = curr_update_id
+    # message handler 
+    dispatcher.add_handler(handler=MessageHandler(filters=filters.Filters.all, callback=echo))
 
-        time.sleep(1)
+    updater.start_polling()
+    updater.idle()
 
-main()
+
+if __name__ == "__main__":
+    main()
