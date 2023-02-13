@@ -21,7 +21,7 @@ def index():
 
 @app.route('/set_webhook', methods=['GET', 'POST'])
 def set_webhook():
-    s = bot.set_webhook('https://8eef-84-54-76-136.in.ngrok.io/api/')
+    s = bot.set_webhook('https://python2022g.pythonanywhere.com/api/')
     if s:
         return "webhook setup ok"
     else:
