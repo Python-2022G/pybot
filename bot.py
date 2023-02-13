@@ -24,26 +24,3 @@ def dog(update: Update, context: CallbackContext):
     url = response.json()['url']
 
     update.message.reply_photo(url)
-
-
-def main():
-    # updater
-    updater = Updater(TOKEN)
-
-    # dispatcher
-    dispatcher = updater.dispatcher
-
-    # command handlers
-    dispatcher.add_handler(handler=CommandHandler('start', callback=start))
-    dispatcher.add_handler(handler=CommandHandler('help', callback=help))
-
-    # message handler 
-    dispatcher.add_handler(handler=MessageHandler(filters=filters.Filters.text('dog'), callback=dog))
-    dispatcher.add_handler(handler=MessageHandler(filters=filters.Filters.text('cat'), callback=cat))
-
-    updater.start_polling()
-    updater.idle()
-
-
-if __name__ == "__main__":
-    main()
