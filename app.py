@@ -39,9 +39,4 @@ def api():
 
     dispatcher.process_update(update)
     return jsonify({'ok': True})
-    return 'ok'
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
         
